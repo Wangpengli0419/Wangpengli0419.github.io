@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
+    <title>BTC盈利目标计算器</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
+        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+
+<body>
+    <h1 class="text-center">BTC盈利目标计算器</h1>
+    <div class="bs-example bs-example-bg-classes" data-example-id="contextual-backgrounds-helpers">
+        <p class="text-warning">计算结果受BTC/USDT/RMB以及手续费实时价格影响</p>
+    </div>
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon3">BTC当前价格 BTC/RMB</span>
+        <input type="text" class="form-control" id="btc" aria-describedby="basic-addon3" placeholder="9000"
+            οnfοcus="this.placeholder=''" οnblur="this.placeholder='9000'">
+    </div>
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon3">USDT当前价格 USDT/RMB</span>
+        <input type="text" class="form-control" id="usdt" aria-describedby="basic-addon3" placeholder="7.05">
+    </div>
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon3">投资金额 RMB</span>
+        <input type="text" class="form-control" id="buy-rmb" aria-describedby="basic-addon3" placeholder="10000">
+    </div>
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon3">盈利目标 RMB</span>
+        <input type="text" class="form-control" id="rmb-target"
+            aria-describedby="basic-addon3" placeholder="300">
+    </div>
+    <!-- <div class="input-group">
+        <span class="input-group-addon" id="basic-addon3">盈利目标 USDT</span>
+        <input type="text" oninput="onInputChg(event)" class="form-control" id="usdt-target"
+            aria-describedby="basic-addon3" placeholder="盈利目标只可选择1种">
+    </div> -->
+    <button type="button" class="btn btn-primary btn-lg btn-block" id="calc">计算</button>
+    <button type="button" class="btn btn-default btn-lg btn-block" id="clear-zero">归零</button>
+    <p class="text-warning" id="buy-result"></p>
+    <p class="text-warning" id="sell-result"></p>
+</body>
+<script>
+
+    function $(id) {
+        return document.getElementById(id)
+    }
+    $('calc').onclick = function () {
+        bidBTC()
+    }
+    $('clear-zero').onclick = function () {
+        clearZero()
+    }
+
+    // let disabled = document.createAttribute("disabled");
+    // function onInputChg() {
+    //     if ($('rmb-target').value == '' && $('usdt-target').value !== '') {
+    //         $('rmb-target').setAttributeNode(disabled);
+    //         $('usdt-target').removeAttribute("disabled");
+    //     } else if ($('rmb-target').value !== '' && $('usdt-target').value == '') {
+    //         $('usdt-target').setAttributeNode(disabled);
+    //         $('rmb-target').removeAttribute("disabled");
+    //     } else if ($('rmb-target').value == '' && $('usdt-target').value == '') {
+    //         $('rmb-target').removeAttribute("disabled");
+    //         $('usdt-target').removeAttribute("disabled");
+    //     }
+    // }
+
+    function bidBTC() {
+        //买入BTC价格
+        let buyBTC = +$('btc').value;
+        //买入USDT价格
+        let buyUSDT = +$('usdt').value
+        //买入RMB
+        let buyTotalRMB = +$('buy-rmb').value
+        //盈利目标-RMB
+        let profitTargetRMB = +$('rmb-target').value
+        //盈利目标-USDT
+        // let profitTargetUSDT = +$('usdt-target').value
+        let buyCount = buyTotalRMB / (buyBTC * buyUSDT)
+        let buyUsdtCount = buyTotalRMB / buyUSDT
+        let sellBTC = (buyTotalRMB + profitTargetRMB) / (buyUSDT * buyCount)
+
+        if (profitTargetRMB) {
+            $('buy-result').innerHTML = `${buyBTC}的时候买入${buyCount.toFixed(4)}BTC 折合 ${buyUsdtCount.toFixed(4)}USDT  需要${buyTotalRMB}RMB`
+            $('sell-result').innerHTML = `${Math.ceil(sellBTC)+0.5}的时候${buyCount.toFixed(4)}BTC可以卖出${buyTotalRMB + profitTargetRMB}RMB`
+        }
+        return;
+    }
+    function clearZero() {
+        $('btc').value = '';
+        $('usdt').value = ''
+        $('buy-rmb').value = ''
+        $('rmb-target').value = ''
+        $('usdt-target').value = ''
+        $('buy-result').innerHTML = ''
+        $('sell-result').innerHTML = ''
+    }
+
+</script>
+
+</html>
